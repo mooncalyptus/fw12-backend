@@ -10,6 +10,7 @@ CREATE TABLE "users" (
     "updatedAt" TIMESTAMPTZ
 );
 INSERT INTO "users" ("picture","firstName","lastName","phoneNumber","email","password") VALUES ('https://picsum.photos/200/300','rania','zahara','0893829382','rania@mail.com','1234');
+UPDATE "users" SET "firstName" = 'Jonas', "lastName" = 'El Rodriguez', "phoneNumber" = '+6281445687121', "email" = 'jonasrodrigu123@gmail.com' WHERE "id" = 1;
 
 CREATE TABLE "resetPassword" (
 "id" INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -76,7 +77,7 @@ CREATE TABLE "cinemas"(
     "address" VARCHAR(255),
     "city" VARCHAR(255),
     "createdAt" TIMESTAMPTZ DEFAULT now(),
-    "updatedAt" TIMESTAMPTZ    
+    "updatedAt" TIMESTAMPTZ
 );
 INSERT INTO "cinemas" ("name","address","city") VALUES ('HiFlix','Colonel street No. 2, East Purwokerto','Purwokerto');
 
@@ -137,7 +138,7 @@ INSERT INTO "reservedSeat" ("seatNum","transactionId") VALUES ('G5',1);
 CREATE TABLE "paymentMethod"(
     "id" INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     "picture" VARCHAR(255),
-    "name" VARCHAR(255),  
+    "name" VARCHAR(255),
     "createdAt" TIMESTAMPTZ DEFAULT now(),
     "updatedAt" TIMESTAMPTZ
 );
@@ -150,3 +151,5 @@ CREATE TABLE "subsribers"(
     "updatedAt" TIMESTAMPTZ
 )
 INSERT INTO "subsribers" ("email") VALUES ('jonasrodri123@gmail.com');
+ALTER TABLE "subsribers"
+RENAME TO "subscribers";
