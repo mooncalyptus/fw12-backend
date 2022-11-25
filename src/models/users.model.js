@@ -5,6 +5,7 @@ exports.displayUser = (data,cb)=>{
   // const value = [data.id, data.picture, data.firstName, data.lastName, data.phoneNumber, data.email, data.password, data.createdAt, data.updatedAt]
   db.query(sql,cb)
 }
+
 exports.insertUser = (data,cb) => {
   const sql = 'INSERT INTO users ("picture","firstName","lastName","phoneNumber","email", "password") VALUES ($1,$2,$3,$4,$5,$6) RETURNING *';
   const value = [data.picture, data.firstName, data.lastName, data.phoneNumber, data.email, data.password]
