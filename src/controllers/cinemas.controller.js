@@ -36,7 +36,7 @@ exports.createCinemas = (req, res)=> {
 }
 
 exports.updateCinemas = (req, res)=> {
-  userModel.editCinemas(req.params.id, req.body, (err,data)=> {
+  editCinemas(req.params.id, req.body, (err,data)=> {
     if(err){
       console.log(err)
       return res.status(500).json({
