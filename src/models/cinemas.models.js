@@ -1,7 +1,7 @@
 const db = require('../helpers/db.helpers')
 
 exports.displayCinemas = (cb) => {
-  const sql = 'SELECT * FROM cinemas';
+  const sql = 'SELECT * FROM cinemas ORDER BY "createdAt" ASC';
   db.query(sql,cb)
 }
 
