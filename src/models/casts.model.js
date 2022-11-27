@@ -1,8 +1,8 @@
 const db = require('../helpers/db.helpers')
 
 exports.displayCasts = (filter, cb)=>{
-  const sql = 'SELECT * FROM casts LIMIT $1 OFFSET $2';
-  const values = [filter.limit, filter.offset]
+  const sql = 'SELECT * FROM casts WHERE name LIKE $3 LIMIT $1 OFFSET $2';
+  const values = [filter.limit, filter.offset, `%${filter.search}%`]
   db.query(sql, values, cb)
 }
 
