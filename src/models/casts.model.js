@@ -1,8 +1,9 @@
 const db = require('../helpers/db.helpers')
 
-exports.displayCasts = (cb)=>{
-  const sql = 'SELECT * FROM casts';
-  db.query(sql,cb)
+exports.displayCasts = (filter, cb)=>{
+  const sql = 'SELECT * FROM casts LIMIT $1 OFFSET $2';
+  const values = [filter.limit, filter.offset]
+  db.query(sql, values, cb)
 }
 
 exports.insertCasts = (data,cb) => {

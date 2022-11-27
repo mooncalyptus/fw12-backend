@@ -12,7 +12,7 @@ exports.insertMovies = (data, cb)=> {
 }
 
 exports.editMovies = (id, data, cb)=> {
-  const sql = `UPDATE "movies" SET "title" = COALESCE(NULLIF($2, ''), "title"), "picture" = COALESCE(NULLIF($3, ''),"picture"), "releaseDate" = COALESCE(NULLIF($4, ''), "releaseDate"), "director" = COALESCE(NULLIF($5, ''), "director"), "duration" = COALESCE(NULLIF($6, ''), "duration"), "synopsis" = COALESCE(NULLIF($7, ''), "synopsis") WHERE id=$1 RETURNING *`;
+  const sql = `UPDATE "movies" SET "title" = COALESCE(NULLIF($2, ''), "title"), "picture" = COALESCE(NULLIF($3, ''),"picture"), "releaseDate" = COALESCE(NULLIF($4, '')::TIMESTAMPTZ, "releaseDate"), "director" = COALESCE(NULLIF($5, ''), "director"), "duration" = COALESCE(NULLIF($6, '')::TIME, "duration"), "synopsis" = COALESCE(NULLIF($7, '')::TEXT, "synopsis") WHERE id=$1 RETURNING *`;
   const value = [id, data.title, data.picture, data.releaseDate, data.director, data.duration, data.synopsis]
   db.query(sql, value, cb)
 }

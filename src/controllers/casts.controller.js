@@ -2,7 +2,12 @@ const {insertCasts, removeCasts, displayCasts, editCasts} = require('../models/c
 
 exports.readAllCasts = (req, res) => {
   // console.log(req.query)
-  displayCasts((err, data)=> {
+  req.query.limit = parseInt(req.query.limit) || 5
+  const filter = {
+    limit: req.query.limit,
+    offset: (parseInt(req.query.page) - 1) * req.query.limit
+  }
+  displayCasts(filter, (err, data)=> {
     if(err){
       console.log(err)
       return res.status(500).json({
