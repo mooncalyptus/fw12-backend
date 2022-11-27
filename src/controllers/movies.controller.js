@@ -1,7 +1,12 @@
 const {displayMovies, insertMovies, removeMovies, editMovies} = require('../models/movies.models')
 
 exports.readAllMovies = (req, res)=> {
-  displayMovies((err, data)=> {
+  req.query.limit = parseInt(req.query.limit) || 5
+  const filter = {
+    limit: req.query.limit,
+    offset: (parseInt(req.query.page) - 1) * req.query.limit
+  }
+  displayMovies(filter, (err, data)=> {
     if(err){
       console.log(err)
       return res.status(500).json({

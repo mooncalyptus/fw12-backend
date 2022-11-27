@@ -1,8 +1,9 @@
 const db = require('../helpers/db.helpers')
 
-exports.displayMovies = (cb) => {
-  const sql = 'SELECT * FROM movies ORDER BY "createdAt" ASC';
-  db.query(sql,cb)
+exports.displayMovies = (filter, cb) => {
+  const sql = 'SELECT * FROM movies LIMIT $1 OFFSET $2';
+  const values = [filter.limit, filter.offset]
+  db.query(sql,values,cb)
 }
 
 exports.insertMovies = (data, cb)=> {
