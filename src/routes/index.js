@@ -5,6 +5,7 @@ routes.use('/cinemas', require('./cinemas.route'))
 routes.use('/movies', require('./movies.route'))
 routes.use('/casts', require('./casts.route'))
 routes.use('/genre', require('./genre.route'))
+routes.use('/auth', require('./auth.route'))
 
 module.exports = routes
 

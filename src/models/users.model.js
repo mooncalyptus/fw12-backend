@@ -23,3 +23,9 @@ exports.removeUser = (id,cb)=> {
   const value = [id]
   db.query(sql,value, cb)
 }
+
+exports.selectUserByEmail = (email,cb)=> {
+  const sql = 'SELECT * FROM users WHERE email = $1'
+  const value = [email]
+  db.query(sql, value, cb)
+}
