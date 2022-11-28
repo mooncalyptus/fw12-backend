@@ -1,11 +1,12 @@
-const {insertCasts, removeCasts, displayCasts, editCasts} = require('../models/casts.model')
+const {insertCasts, removeCasts, displayCasts, selectCountAllCasts, editCasts} = require('../models/casts.model')
 
 exports.readAllCasts = (req, res) => {
   // console.log(req.query)
   req.query.page = parseInt(req.query.page) || 1
   req.query.limit = parseInt(req.query.limit) || 5
   req.query.search = req.query.search || ''
-  req.query.sortBy = req.query.sortBy || 'createdAt'
+  const sortable = ['name','createdAt','updatedAt']
+  req.query.sortBy = (sortable.includes(req.query.sortBy) && req.query.sortBy) || 'createdAt'
   req.query.sort = req.query.sort || 'ASC'
   const filter = {
     limit: req.query.limit,
@@ -14,7 +15,16 @@ exports.readAllCasts = (req, res) => {
     sort: req.query.sort,
     sortBy: req.query.sortBy
   }
-  displayCasts(filter, (err, data)=> {
+  const pageInfo ={
+    page: req.query.page,
+
+  }
+  selectCountAllCasts(filter, (err,data)=> {
+    pageInfo.totalData = parseInt(data.rows[0].totalData)
+    pageInfo.totalPage = Math.ceil(pageInfo.totalData / req.query.limit)
+    pageInfo.nextPage = req.query.page < pageInfo.totalPage ? req.query.page + 1 : null
+    pageInfo.prevPage = req.query.page > 1 ? req.query.page - 1 : null
+    displayCasts(filter, (err, data)=> {
     if(err){
       console.log(err)
       return res.status(500).json({
@@ -24,8 +34,10 @@ exports.readAllCasts = (req, res) => {
     }
     return res.status(200).json({
       success: true,
+      pageInfo,
       results: data.rows
     })
+  })
   })
 }
 

@@ -1,3 +1,4 @@
+const { DatabaseError } = require('pg');
 const db = require('../helpers/db.helpers')
 
 exports.displayCasts = (filter, cb)=>{
@@ -6,6 +7,11 @@ exports.displayCasts = (filter, cb)=>{
   db.query(sql, values, cb)
 }
 
+exports.selectCountAllCasts = (filter, cb)=> {
+  const sql = `SELECT COUNT("name") AS "totalData" FROM "casts" WHERE name LIKE $1`;
+  const values = [`%${filter.search}%` ]
+  db.query(sql, values, cb)
+}
 exports.insertCasts = (data,cb) => {
   const sql = 'INSERT INTO casts ("name") VALUES ($1) RETURNING *';
   const value = [data.name]
