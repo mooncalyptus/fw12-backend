@@ -23,15 +23,22 @@ exports.login = (req,res)=> {
   })
 }
 
-exports.register = (req,res)=> {
-authModel.insertUser(req.body, (err,data)=>{
-  if(err){
-    errorHandler(err,res)
-}
-return res.status(200).json({
-  success: true,
-  message: "User created successfully",
-  results: data.rows[0]
-})
-})
+exports.register = (req, res)=> {
+  return authModel.insertUser(req.body, (err,data)=> {
+    if(err){
+      return res.status(500).json({
+        success: false,
+        message: 'email registered'
+      })
+    }
+    const { rows: users } = data;
+    const [user] = users;
+    const token = jwt.sign({id: user.id}, "backend-secret")
+
+    return res.status(200).json({
+      success: true,
+      message: "Registered success",
+      results: { token }
+    })
+  })
 }
