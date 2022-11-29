@@ -1,5 +1,6 @@
 const authModel = require('../models/users.model')
 const jwt = require('jsonwebtoken')
+// const { RowDescriptionMessage } = require('pg-protocol/dist/messages')
 exports.login = (req,res)=> {
   authModel.selectUserByEmail(req.body.email, (err, {rows})=> {
     if(rows.length){
@@ -20,4 +21,17 @@ exports.login = (req,res)=> {
       message: 'wrong email/password'
     })
   })
+}
+
+exports.register = (req,res)=> {
+authModel.insertUser(req.body, (err,data)=>{
+  if(err){
+    errorHandler(err,res)
+}
+return res.status(200).json({
+  success: true,
+  message: "User created successfully",
+  results: data.rows[0]
+})
+})
 }

@@ -10,6 +10,4 @@ return res.status(500).json({
   message: 'Something happen in our backend',
 })
 }
-
-
 module.exports = errorHandler
