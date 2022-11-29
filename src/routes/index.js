@@ -8,6 +8,7 @@ routes.use('/casts', require('./casts.route'))
 routes.use('/genre', require('./genre.route'))
 routes.use('/payment', require('./paymentMethod.route'))
 routes.use('/status', require('./status.route'))
+routes.use('/subscribers', require('./subscriber.route'))
 routes.use('/auth', require('./auth.route'))
 
 module.exports = routes
