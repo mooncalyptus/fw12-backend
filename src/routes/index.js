@@ -7,6 +7,7 @@ routes.use('/movies', authMiddleware, require('./movies.route'))
 routes.use('/casts', require('./casts.route'))
 routes.use('/genre', require('./genre.route'))
 routes.use('/payment', require('./paymentMethod.route'))
+routes.use('/status', require('./status.route'))
 routes.use('/auth', require('./auth.route'))
 
 module.exports = routes
