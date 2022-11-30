@@ -9,7 +9,9 @@ routes.use('/genre', require('./genre.route'))
 routes.use('/payment', require('./paymentMethod.route'))
 routes.use('/status', require('./status.route'))
 routes.use('/subscribers', require('./subscriber.route'))
+routes.use('/resetPassword', require('./resetPassword.route'))
 routes.use('/auth', require('./auth.route'))
+// routes.use('/forgotPassword', require('./forgotPassword.route'))
 
 module.exports = routes
 
