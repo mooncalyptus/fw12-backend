@@ -84,32 +84,42 @@ exports.resetPassword = (req, res)=>{
   const {password, confirmPassword} = req.body
   if(password == confirmPassword){
     resetPasswordModel.selectResetPasswordByEmailAndCode(req.body, (err, data)=>{
-      // console.log(data)
       if(err){
-        // console.log(data)
         return errorHandler(err, res)
       }
       if(data.rows.length){
-        const [user] = data.rows
-        console.log(user)
+        const [resetRequest] = data.rows
+        // console.log(resetRequest)
         const output = {
-          id: user.userId,
+          id: resetRequest.userId,
           password: password
         }
         authModel.editUser(output, (err, data)=>{
-          // console.log(data)
           if(err){
-            // console.log(data)
             return errorHandler(err,res)
           }
-          if(data.rows.length){
-            return res.status(200).json({
-              success: true,
-              message: "password updated"
+         if(data.rows.length){
+            resetPasswordModel.removeResetPassword(resetRequest.id, (err, data)=> {
+              if(data.rows.length){
+                return res.status(200).json({
+                  success: true,
+                  message: "password updated"
+                })
+              }
             })
           }
         })
+      } else{
+        return res.status(400).json({
+          success: false,
+          message: 'reset request not found'
+        })
       }
+    })
+  } else{
+    return res.status(400).json({
+      success: false,
+      message: 'password and confirm password not match'
     })
   }
 }
