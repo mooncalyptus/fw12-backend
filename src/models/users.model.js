@@ -13,8 +13,9 @@ exports.insertUser = (data,cb) => {
 }
 
 exports.editUser = (data,cb)=> {
-  const sql = 'UPDATE users SET "picture" = $1, "firstName" = $2, "lastName" = $3, "phoneNumber" = $4, "email" = $5, "password" = $6 WHERE "id" = $7 RETURNING *';
-  const value = [data.picture, data.firstName, data.lastName, data.phoneNumber, data.email, data.password, data.id]
+  console.log(data, data.id, data.password)
+  const sql = `UPDATE users SET "picture" = COALESCE(NULLIF($2, '')::VARCHAR, "picture"), "firstName" = COALESCE(NULLIF($3, '')::VARCHAR, "firstName"), "lastName" = COALESCE(NULLIF($4, '')::VARCHAR, "lastName"), "phoneNumber" = COALESCE(NULLIF($5, '')::VARCHAR, "phoneNumber"), "email" = COALESCE(NULLIF($6, '')::VARCHAR, "email"), "password" = COALESCE(NULLIF($7, '')::VARCHAR, "password") WHERE "id" = $1 RETURNING *`;
+  const value = [data.id, data.picture, data.firstName, data.lastName, data.phoneNumber, data.email, data.password]
   db.query(sql,value,cb)
 }
 

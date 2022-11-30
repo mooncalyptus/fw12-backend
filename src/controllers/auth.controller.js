@@ -1,5 +1,6 @@
 const authModel = require('../models/users.model')
 const resetPasswordModel = require('../models/resetPassword.model')
+const errorHandler = require('../helpers/errorHandler.helpers')
 const jwt = require('jsonwebtoken')
 // const { RowDescriptionMessage } = require('pg-protocol/dist/messages')
 exports.login = (req,res)=> {
@@ -27,10 +28,11 @@ exports.login = (req,res)=> {
 exports.register = (req, res)=> {
   return authModel.insertUser(req.body, (err,data)=> {
     if(err){
-      return res.status(500).json({
-        success: false,
-        message: 'email registered'
-      })
+      return errorHandler(err,res)
+      // return res.status(500).json({
+      //   success: false,
+      //   message: 'email registered'
+      // })
     }
     const { rows: users } = data;
     const [user] = users;
@@ -48,10 +50,11 @@ exports.forgotPassword = (req, res)=> {
   const {email} = req.body
   authModel.selectUserByEmail(email, (err, {rows: users})=> {
     if(err){
-      return res.status(500).json({
-        message: false,
-        message: "wrong password"
-      })
+      // return res.status(500).json({
+      //   message: false,
+      //   message: "wrong password"
+      // })
+      return errorHandler(err,res)
     }
     if(users.length){
       const [user] = users
@@ -75,4 +78,38 @@ exports.forgotPassword = (req, res)=> {
       })
     }
   })
+}
+
+exports.resetPassword = (req, res)=>{
+  const {password, confirmPassword} = req.body
+  if(password == confirmPassword){
+    resetPasswordModel.selectResetPasswordByEmailAndCode(req.body, (err, data)=>{
+      // console.log(data)
+      if(err){
+        // console.log(data)
+        return errorHandler(err, res)
+      }
+      if(data.rows.length){
+        const [user] = data.rows
+        console.log(user)
+        const output = {
+          id: user.userId,
+          password: password
+        }
+        authModel.editUser(output, (err, data)=>{
+          // console.log(data)
+          if(err){
+            // console.log(data)
+            return errorHandler(err,res)
+          }
+          if(data.rows.length){
+            return res.status(200).json({
+              success: true,
+              message: "password updated"
+            })
+          }
+        })
+      }
+    })
+  }
 }
