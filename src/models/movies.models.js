@@ -23,3 +23,9 @@ exports.removeMovies = (id,cb)=> {
   const value = [id]
   db.query(sql, value,cb)
 }
+
+exports.upcomingMovie = (data, cb)=> {
+  const sql = `SELECT * FROM movies WHERE date_part('year', "releaseDate")::TEXT = COALESCE(NULLIF($1,''), date_part('year', current_date)::TEXT) AND date_part('month', "releaseDate")::TEXT = COALESCE(NULLIF($2,''), date_part('month', current_date)::TEXT)`;
+  const values = [data.year, data.month]
+  db.query(sql, values, cb)
+}

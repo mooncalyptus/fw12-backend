@@ -1,5 +1,6 @@
 const authModel = require('../models/users.model')
 const resetPasswordModel = require('../models/resetPassword.model')
+const movieModel = require('../models/movies.models')
 const errorHandler = require('../helpers/errorHandler.helpers')
 const jwt = require('jsonwebtoken')
 // const { RowDescriptionMessage } = require('pg-protocol/dist/messages')
@@ -50,10 +51,6 @@ exports.forgotPassword = (req, res)=> {
   const {email} = req.body
   authModel.selectUserByEmail(email, (err, {rows: users})=> {
     if(err){
-      // return res.status(500).json({
-      //   message: false,
-      //   message: "wrong password"
-      // })
       return errorHandler(err,res)
     }
     if(users.length){
@@ -122,4 +119,18 @@ exports.resetPassword = (req, res)=>{
       message: 'password and confirm password not match'
     })
   }
+}
+
+exports.upcoming = (req, res)=> {
+  movieModel.upcomingMovie(req.query, (err, data)=> {
+    if(err){
+      console.log(err)
+      return errorHandler(err, res)
+    }
+    return res. json({
+      success: true,
+      message: "showed",
+      results: data.rows
+    })
+  })
 }
