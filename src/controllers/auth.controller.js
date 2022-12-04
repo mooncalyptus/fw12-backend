@@ -130,7 +130,7 @@ exports.upcoming = (req, res)=> {
     return res. json({
       success: true,
       message: "showed",
-      results: data.rows
+      results: data.rows,
     })
   })
 }

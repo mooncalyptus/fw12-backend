@@ -1,8 +1,7 @@
-const {insertUser, removeUser, displayUser, editUser} = require('../models/users.model')
-const errorHandler = require('../helpers/errorHandler.helpers')
-exports.readAllUsers = (req, res) => {
-  // console.log(req.query)
-  displayUser(req.query, (err, data)=> {
+const {insertMovieSchedule, removeMovieSchedule, displayMovieSchedule, editMovieSchedule} = require('../models/movieSchedule.models')
+
+exports.readAllMovieSchedule = (req, res) => {
+  displayMovieSchedule((err, data)=> {
     if(err){
       console.log(err)
       return res.status(500).json({
@@ -17,15 +16,8 @@ exports.readAllUsers = (req, res) => {
   })
 }
 
-exports.readUser = (req, res) => {
-  console.log(req.params.id)
-  return res.status(200).json({
-    success: true,
-    message: "Detail users"
-  })
-}
-exports.createUser = (req, res)=> {
-  insertUser(req.body, (err,data)=>{
+exports.createMovieSchedule = (req, res)=> {
+  insertMovieSchedule(req.body, (err,data)=>{
     if(err){
       errorHandler(err,res)
   }
@@ -37,14 +29,10 @@ exports.createUser = (req, res)=> {
   })
 }
 
-exports.updateUser = (req, res)=> {
-  if(req.file){
-    console.log(req.file)
-    req.body.picture = req.file.filename
-  }
-  editUser(req.body, (err,data)=> {
+exports.updateMovieSchedule = (req, res)=> {
+  editMovieSchedule(req.body, (err,data)=> {
     if(err){
-      // console.log(err)
+      console.log(err)
       return res.status(500).json({
         success: false,
         message: 'Something happen in our backend',
@@ -57,8 +45,8 @@ exports.updateUser = (req, res)=> {
   })
 }
 
-exports.deleteUsers = (req,res)=> {
-  removeUser(req.params.id, (err, data)=> {
+exports.deleteMovieSchedule = (req,res)=> {
+  removeMovieSchedule(req.params.id, (err, data)=> {
     if(err){
       console.log(err)
       return res.status(500).json({
