@@ -31,7 +31,7 @@ exports.createMovieSchedule = (req, res)=> {
 }
 
 exports.updateMovieSchedule = (req, res)=> {
-  editMovieSchedule(req.body, (err,data)=> {
+  editMovieSchedule(req.params.id, req.body, (err,data)=> {
     if(err){
       console.log(err)
       return res.status(500).json({
@@ -41,7 +41,8 @@ exports.updateMovieSchedule = (req, res)=> {
     }
     return res.status(200).json({
       success: true,
-      message: 'User updated successfully'
+      message: 'User updated successfully',
+      results: data.rows[0]
     })
   })
 }

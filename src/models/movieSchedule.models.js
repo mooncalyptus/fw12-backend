@@ -12,8 +12,9 @@ exports.insertMovieSchedule = (data,cb) => {
 }
 
 exports.editMovieSchedule = (id,data,cb)=> {
-  const sql = `UPDATE "movieSchedule" SET "moviesId" = COALESCE(NULLIF($2, '')::INTEGER, "moviesId"), "cinemasId" = COALESCE(NULLIF($3, '')::INTEGER, "cinemasId"), "price" = COALESCE(NULLIF($4, '')::INTEGER, "price"),  "startDate" = COALESCE(NULLIF($5, '')::TIMESTAMP, "startDate"), "endDate" = COALESCE(NULLIF($6, '')::TIMESTAMP, "endDate"), WHERE id=$1 RETURNING *`;
-  const value = [id, data.name]
+  const sql = `UPDATE "movieSchedule" SET "movieId" = COALESCE(NULLIF($2, '')::INTEGER, "movieId"),  "cinemasId" = COALESCE(NULLIF($3, '')::INTEGER, "cinemasId"), "price" = COALESCE(NULLIF($4, '')::BIGINT, "price"), "startDate" = COALESCE(NULLIF($5, '')::DATE, "startDate"), "endDate" = COALESCE(NULLIF($6, '')::DATE, "endDate") WHERE id=$1 RETURNING *`;
+  const value = [id, data.movieId, data.cinemasId, data.price, data.startDate, data.endDate];
+  console.log(data)
   db.query(sql,value,cb)
 }
 

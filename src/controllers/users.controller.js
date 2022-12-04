@@ -42,7 +42,7 @@ exports.updateUser = (req, res)=> {
     console.log(req.file)
     req.body.picture = req.file.filename
   }
-  editUser(req.body, (err,data)=> {
+  editUser(req.params.id, req.body, (err,data)=> {
     if(err){
       // console.log(err)
       return res.status(500).json({
@@ -52,7 +52,8 @@ exports.updateUser = (req, res)=> {
     }
     return res.status(200).json({
       success: true,
-      message: 'User updated successfully'
+      message: 'User updated successfully',
+      results: data.rows[0]
     })
   })
 }
