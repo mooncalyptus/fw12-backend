@@ -1,5 +1,5 @@
 const {insertMovieSchedule, removeMovieSchedule, displayMovieSchedule, editMovieSchedule} = require('../models/movieSchedule.models')
-
+const errorHandler = require ('../helpers/errorHandler.helpers')
 exports.readAllMovieSchedule = (req, res) => {
   displayMovieSchedule((err, data)=> {
     if(err){
@@ -19,12 +19,13 @@ exports.readAllMovieSchedule = (req, res) => {
 exports.createMovieSchedule = (req, res)=> {
   insertMovieSchedule(req.body, (err,data)=>{
     if(err){
-      errorHandler(err,res)
+      console.log(err)
+      return errorHandler(err,res)
   }
   return res.status(200).json({
     success: true,
     message: "User created successfully",
-    results: data.rows[0]
+    results: data.rows
   })
   })
 }
