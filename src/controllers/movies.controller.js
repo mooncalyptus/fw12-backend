@@ -1,4 +1,4 @@
-const {displayMovies, insertMovies, removeMovies, editMovies} = require('../models/movies.models')
+const {displayMovies, insertMovies, removeMovies, editMovies, nowShowingMovie} = require('../models/movies.models')
 
 exports.readAllMovies = (req, res)=> {
   console.log(req.userData)
@@ -8,6 +8,7 @@ exports.readAllMovies = (req, res)=> {
     limit: req.query.limit,
     offset: (parseInt(req.query.page) - 1) * req.query.limit
   }
+
   displayMovies(filter, (err, data)=> {
     if(err){
       console.log(err)
@@ -70,4 +71,20 @@ exports.deleteMovies = (req,res)=> {
       message: "Data deleted successfully"
     })
   })
+}
+
+exports.nowShowing = (req, res)=> {
+nowShowingMovie((err, data)=> {
+  if(err){
+    return res.status(500).json({
+      success: false,
+      message: 'Something happen in our backend'
+    })
+  }
+  return res.status(200).json({
+    success: true,
+    message: 'Showed',
+    results : data.rows
+  })
+})
 }

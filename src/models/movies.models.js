@@ -29,3 +29,13 @@ exports.upcomingMovie = (data, cb)=> {
   const values = [data.year, data.month]
   db.query(sql, values, cb)
 }
+
+exports.nowShowingMovie = (cb)=> {
+  const sql = `SELECT m.id, m.title, ms."startDate", ms."endDate",string_agg(g.name, ', ') AS genre
+  FROM movies m
+  JOIN "movieSchedule" ms ON ms."movieId" = m.id
+  LEFT JOIN "movieGenre" mg ON mg."movieId" = m.id
+  JOIN "genre" g ON g.id = mg."genreId" WHERE current_date
+  BETWEEN ms."startDate" AND ms."endDate" GROUP BY m.id, ms.id`;
+  db.query(sql,cb);
+}
