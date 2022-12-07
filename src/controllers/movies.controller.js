@@ -42,6 +42,10 @@ exports.createMovies = (req, res)=> {
 }
 
 exports.updateMovies = (req, res)=> {
+  if(req.file){
+    console.log(req.file)
+    req.body.picture = req.file.filename
+  }
   editMovies(req.params.id, req.body, (err,data)=> {
     if(err){
       console.log(err)

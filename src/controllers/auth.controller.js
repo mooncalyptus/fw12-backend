@@ -30,10 +30,6 @@ exports.register = (req, res)=> {
   return authModel.insertUser(req.body, (err,data)=> {
     if(err){
       return errorHandler(err,res)
-      // return res.status(500).json({
-      //   success: false,
-      //   message: 'email registered'
-      // })
     }
     const { rows: users } = data;
     const [user] = users;
