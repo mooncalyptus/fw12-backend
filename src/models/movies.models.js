@@ -1,8 +1,8 @@
 const db = require('../helpers/db.helpers')
 
 exports.displayMovies = (filter, cb) => {
-  const sql = 'SELECT * FROM movies ORDER BY "createdAt" ASC LIMIT $1 OFFSET $2';
-  const values = [filter.limit, filter.offset]
+  const sql = `SELECT * FROM movies WHERE title LIKE $3 ORDER BY "${filter.sortBy}" ${filter.sort} LIMIT $1 OFFSET $2;`
+  const values = [filter.limit, filter.offset, `%${filter.search}%`]
   db.query(sql,values,cb)
 }
 

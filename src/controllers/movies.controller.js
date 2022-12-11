@@ -1,12 +1,18 @@
 const {displayMovies, insertMovies, removeMovies, editMovies, nowShowingMovie} = require('../models/movies.models')
 
 exports.readAllMovies = (req, res)=> {
-  console.log(req.userData)
   req.query.limit = parseInt(req.query.limit) || 5
   req.query.page = parseInt(req.query.page) || 1
+  req.query.search = req.query.search || ''
+  const sortable = ['title','createdAt','updatedAt']
+  req.query.sortBy = (sortable.includes(req.query.sortBy) && req.query.sortBy)|| 'createdAt'
+  req.query.sort = req.query.sort || 'ASC'
   const filter = {
     limit: req.query.limit,
-    offset: (parseInt(req.query.page) - 1) * req.query.limit
+    offset: (parseInt(req.query.page) - 1) * req.query.limit,
+    search: req.query.search,
+    sort: req.query.sort,
+    sortBy: req.query.sortBy
   }
 
   displayMovies(filter, (err, data)=> {
