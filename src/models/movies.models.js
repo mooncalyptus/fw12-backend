@@ -6,6 +6,11 @@ exports.displayMovies = (filter, cb) => {
   db.query(sql,values,cb)
 }
 
+exports.countAllMovies = (filter,cb)=> {
+  const sql = `SELECT COUNT(*) as "dataCount" FROM movies WHERE title LIKE $1;`
+  const values = [`%${filter.search}%`]
+  db.query(sql, values, cb)
+}
 exports.insertMovies = (data, cb)=> {
   const sql = 'INSERT INTO movies ("title","picture","releaseDate","director","duration","synopsis") VALUES ($1, $2, $3,$4,$5,$6) RETURNING *';
   const value = [data.title, data.picture, data.releaseDate, data.director, data.duration, data.synopsis]

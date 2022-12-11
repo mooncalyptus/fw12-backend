@@ -1,4 +1,4 @@
-const {displayMovies, insertMovies, removeMovies, editMovies, nowShowingMovie} = require('../models/movies.models')
+const {displayMovies, insertMovies, removeMovies, editMovies, nowShowingMovie, countAllMovies} = require('../models/movies.models')
 
 exports.readAllMovies = (req, res)=> {
   req.query.limit = parseInt(req.query.limit) || 5
@@ -15,19 +15,37 @@ exports.readAllMovies = (req, res)=> {
     sortBy: req.query.sortBy
   }
 
-  displayMovies(filter, (err, data)=> {
-    if(err){
-      console.log(err)
-      return res.status(500).json({
-        success: false,
-        message: 'Something happen in our backend'
+const pageInfo = {
+  page: req.query.page,
+
+}
+    countAllMovies(filter, (err, data)=> {
+      if(err){
+        console.log(err)
+        return res.status(500).json({
+          success: false,
+          message: 'Something happen in our backend'
+        })
+      }
+      pageInfo.dataCount = parseInt(data.rows[0].dataCount)
+      pageInfo.totalPage = Math.ceil(pageInfo.dataCount / req.query.limit)
+      pageInfo.nextPage = req.query.page < pageInfo.totalPage ? req.query.page + 1 : null
+      pageInfo.prevPage = req.query.page > 1 ? req.query.page - 1 : null
+      displayMovies(filter, (err, data)=> {
+        if(err){
+          console.log(err)
+          return res.status(500).json({
+            success: false,
+            message: 'Something happen in our backend'
+          })
+        }
+        return res.status(200).json({
+          success: true,
+          pageInfo,
+          result: data.rows
+        })
       })
-    }
-    return res.status(200).json({
-      success: true,
-      result: data.rows
     })
-  })
 }
 
 exports.createMovies = (req, res)=> {
