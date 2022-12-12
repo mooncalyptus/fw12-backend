@@ -193,4 +193,5 @@ ALTER TABLE "transactions" ADD CONSTRAINT "fk_movie_scheduleId" FOREIGN KEY ("mo
 ALTER TABLE "transactions" DROP CONSTRAINT "fk_statusId";
 ALTER TABLE "transactions" ADD CONSTRAINT "fk_statusId" FOREIGN KEY ("statusId") REFERENCES "status" (id) ON UPDATE CASCADE ON DELETE CASCADE;
 
+ALTER TABLE "reservedSeat" ADD CONSTRAINT "fk_transactionId" FOREIGN KEY ("transactionId") REFERENCES "transactions" (id) ON UPDATE CASCADE ON DELETE CASCADE;
 SELECT * FROM "resetPassword" JOIN "users" ON "users"."id" = "resetPassword"."id";
