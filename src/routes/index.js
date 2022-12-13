@@ -12,7 +12,6 @@ routes.use('/status', require('./status.route'))
 routes.use('/subscribers', require('./subscriber.route'))
 routes.use('/auth', require('./auth.route'))
 routes.use('/transactions', require('./transactions.route'))
-
 module.exports = routes
 
 

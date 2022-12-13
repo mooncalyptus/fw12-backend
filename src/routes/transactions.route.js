@@ -1,8 +1,6 @@
-const {readAllTransactions, createTransactions} = require('../controllers/transactions.controller')
+const transactions = require('express').Router()
+const {createTransactions} = require('../controllers/transactions.controller')
 
-const transactionRoutes = require('express').Router()
+transactions.post('/createtransactions', createTransactions)
 
-transactionRoutes.get('/', readAllTransactions)
-transactionRoutes.post('/createtransactions', createTransactions )
-
-module.exports = transactionRoutes
+module.exports = transactions
