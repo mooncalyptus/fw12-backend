@@ -1,4 +1,4 @@
-const {displayMovies, insertMovies, removeMovies, editMovies, nowShowingMovie, countAllMovies} = require('../models/movies.models')
+const {displayMovies, insertMovies, removeMovies, editMovies, nowShowingMovie, countAllMovies, selectOneMovies} = require('../models/movies.models')
 
 exports.readAllMovies = (req, res)=> {
   req.query.limit = parseInt(req.query.limit) || 5
@@ -48,7 +48,27 @@ const pageInfo = {
     })
 }
 
+// exports.selectOneMovies = (req, res)=> {
+//   selectOneMovies(req.params, (err, data)=> {
+//     if(err){
+//       console.log(err)
+//       return res.status(500).json({
+//         success: false,
+//         message: "Error, please check your backend."
+//       })
+//     }
+//     return res.status(200).json({
+//       success: true,
+//       message: "Data selected.",
+//       results: data.rows[0]
+//     })
+//   })
+// }
 exports.createMovies = (req, res)=> {
+  if(req.file){
+    console.log(req.file)
+    req.body.picture = req.file.filename
+  }
   insertMovies(req.body, (err, data)=> {
     if(err){
       console.log(err)
