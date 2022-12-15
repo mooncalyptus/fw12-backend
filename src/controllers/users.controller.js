@@ -25,6 +25,10 @@ exports.readUser = (req, res) => {
   })
 }
 exports.createUser = (req, res)=> {
+  if(req.file){
+    // console.log(req.file)
+    req.body.picture = req.file.filename
+  }
   insertUser(req.body, (err,data)=>{
     if(err){
       errorHandler(err,res)
