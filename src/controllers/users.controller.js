@@ -1,7 +1,6 @@
 const {insertUser, removeUser, displayUser, editUser} = require('../models/users.model')
 const errorHandler = require('../helpers/errorHandler.helpers')
 exports.readAllUsers = (req, res) => {
-  // console.log(req.query)
   displayUser(req.query, (err, data)=> {
     if(err){
       console.log(err)
