@@ -1,3 +1,6 @@
+require('dotenv').config({
+  path: '.env',
+})
 const { urlencoded } = require('express')
 const express = require('express')
 const cors = require('cors')
@@ -17,6 +20,7 @@ app.get('/', (req,res) => {
     })
 })
 
-app.listen(8888, ()=> {
-    console.log("App running on port 8888");
+const PORT = process.env.PORT || 8888
+app.listen(PORT, ()=> {
+    console.log(`App running on port ${PORT}`);
 })
