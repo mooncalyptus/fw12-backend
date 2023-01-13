@@ -3,17 +3,18 @@ const resetPasswordModel = require('../models/resetPassword.model')
 const movieModel = require('../models/movies.models')
 const errorHandler = require('../helpers/errorHandler.helpers')
 const jwt = require('jsonwebtoken')
+const argon = require('argon2')
 // const { RowDescriptionMessage } = require('pg-protocol/dist/messages')
-exports.login = (req,res)=> {
-  authModel.selectUserByEmail(req.body.email, (err, {rows})=> {
-    if(rows.length){
+exports.login = (req, res) => {
+  authModel.selectUserByEmail(req.body.email, (err, { rows }) => {
+    if (rows.length) {
       const [user] = rows
-      if(req.body.password === user.password){
-        const token = jwt.sign({id: user.id}, 'backend-secret')
+      if (req.body.password === user.password) {
+        const token = jwt.sign({ id: user.id }, 'backend-secret')
         return res.status(200).json({
           success: true,
           message: 'login success',
-          results : {
+          results: {
             token
           }
         })
@@ -26,45 +27,61 @@ exports.login = (req,res)=> {
   })
 }
 
-exports.register = (req, res)=> {
-  return authModel.insertUser(req.body, (err,data)=> {
-    if(err){
-      return errorHandler(err,res)
-    }
-    const { rows: users } = data;
-    const [user] = users;
-    const token = jwt.sign({id: user.id}, "backend-secret")
+// exports.register = (req, res)=> {
+//   return authModel.insertUser(req.body, (err,data)=> {
+//     if(err){
+//       return errorHandler(err,res)
+//     }
+//     const { rows: users } = data;
+//     const [user] = users;
+//     const token = jwt.sign({id: user.id}, "backend-secret")
+
+//     return res.status(200).json({
+//       success: true,
+//       message: "Registered success",
+//       results: { token }
+//     })
+//   })
+// }
+
+exports.register = async (req, res) => {
+  try {
+    req.body.password = await argon.hash(req.body.password)
+    const user = await authModel.insertUser(req.body)
+    const token = jwt.sign({ id: user.id }, "backend-secret")
 
     return res.status(200).json({
       success: true,
       message: "Registered success",
       results: { token }
     })
-  })
+  } catch(error){
+    if(error) errorHandler(error, res)
+  }
 }
 
-exports.forgotPassword = (req, res)=> {
-  const {email} = req.body
-  authModel.selectUserByEmail(email, (err, {rows: users})=> {
-    if(err){
-      return errorHandler(err,res)
+exports.forgotPassword = (req, res) => {
+  const { email } = req.body
+  authModel.selectUserByEmail(email, (err, { rows: users }) => {
+    if (err) {
+      return errorHandler(err, res)
     }
-    if(users.length){
+    if (users.length) {
       const [user] = users
       const data = {
         email,
         userId: user.id,
         code: Math.ceil(Math.random() * 90000)
       }
-      resetPasswordModel.insertResetPassword(data, (err, {rows: results})=> {
-        if(results.length){
+      resetPasswordModel.insertResetPassword(data, (err, { rows: results }) => {
+        if (results.length) {
           return res.status(200).json({
             success: true,
             message: "Reset Password has been requested"
           })
         }
       })
-    } else{
+    } else {
       return res.status(400).json({
         success: false,
         message: "user not found"
@@ -73,27 +90,27 @@ exports.forgotPassword = (req, res)=> {
   })
 }
 
-exports.resetPassword = (req, res)=>{
-  const {password, confirmPassword} = req.body
-  if(password == confirmPassword){
-    resetPasswordModel.selectResetPasswordByEmailAndCode(req.body, (err, data)=>{
-      if(err){
+exports.resetPassword = (req, res) => {
+  const { password, confirmPassword } = req.body
+  if (password == confirmPassword) {
+    resetPasswordModel.selectResetPasswordByEmailAndCode(req.body, (err, data) => {
+      if (err) {
         return errorHandler(err, res)
       }
-      if(data.rows.length){
+      if (data.rows.length) {
         const [resetRequest] = data.rows
         // console.log(resetRequest)
         const output = {
           id: resetRequest.userId,
           password: password
         }
-        authModel.editUser(output, (err, data)=>{
-          if(err){
-            return errorHandler(err,res)
+        authModel.editUser(output, (err, data) => {
+          if (err) {
+            return errorHandler(err, res)
           }
-         if(data.rows.length){
-            resetPasswordModel.removeResetPassword(resetRequest.id, (err, data)=> {
-              if(data.rows.length){
+          if (data.rows.length) {
+            resetPasswordModel.removeResetPassword(resetRequest.id, (err, data) => {
+              if (data.rows.length) {
                 return res.status(200).json({
                   success: true,
                   message: "password updated"
@@ -102,14 +119,14 @@ exports.resetPassword = (req, res)=>{
             })
           }
         })
-      } else{
+      } else {
         return res.status(400).json({
           success: false,
           message: 'reset request not found'
         })
       }
     })
-  } else{
+  } else {
     return res.status(400).json({
       success: false,
       message: 'password and confirm password not match'
@@ -117,13 +134,13 @@ exports.resetPassword = (req, res)=>{
   }
 }
 
-exports.upcoming = (req, res)=> {
-  movieModel.upcomingMovie(req.query, (err, data)=> {
-    if(err){
+exports.upcoming = (req, res) => {
+  movieModel.upcomingMovie(req.query, (err, data) => {
+    if (err) {
       console.log(err)
       return errorHandler(err, res)
     }
-    return res. json({
+    return res.json({
       success: true,
       message: "showed",
       results: data.rows,
