@@ -18,7 +18,7 @@ app.use("/uploads", express.static("uploads/"));
 app.get('/', (req,res) => {
     return res.status(200).json({
         success: true,
-        message: "Tes Integrasi react native"
+        message: "Backend running well"
     })
 })
 
