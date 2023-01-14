@@ -5,7 +5,6 @@ exports.displayUser = (data,cb)=>{
   db.query(sql,cb)
 }
 
-
 exports.insertUser = async(data, cb) => {
   try{
       const sql = 'INSERT INTO users ("picture","firstName","lastName","phoneNumber","email", "password") VALUES ($1,$2,$3,$4,$5,$6) RETURNING *';
@@ -30,11 +29,6 @@ exports.removeUser = (id,cb)=> {
   db.query(sql,value, cb)
 }
 
-// exports.selectUserByEmail = (email,cb)=> {
-//   const sql = 'SELECT * FROM users WHERE email = $1'
-//   const value = [email]
-//   db.query(sql, value, cb)
-// }
 
 exports.selectUserByEmail = async(email) => {
   try{

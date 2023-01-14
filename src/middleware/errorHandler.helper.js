@@ -9,6 +9,12 @@ const errorHandler = (error, res) => {
       message: "Email already used",
     });
   }
+  if(error.message.includes("notfound_code_request")){
+    return res.status(400).json({
+      succes: false,
+      message: "Request not found"
+    })
+  }
   if (
     error.message.includes(' unique constraint "users_phonenumber_unique"') ||
     error.message.includes(`users_phoneNumber_key`)

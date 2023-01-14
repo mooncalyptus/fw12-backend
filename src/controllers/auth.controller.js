@@ -1,5 +1,6 @@
 const authModel = require('../models/users.model')
 const resetPasswordModel = require('../models/resetPassword.model')
+const forgotPasswordModel = require('../models/forgotPassword.models')
 const movieModel = require('../models/movies.models')
 const errorHandler = require('../helpers/errorHandler.helpers')
 const jwt = require('jsonwebtoken')
@@ -35,7 +36,6 @@ exports.register = async (req, res) => {
     req.body.password = await argon.hash(req.body.password)
     const user = await authModel.insertUser(req.body)
     const token = jwt.sign({ id: user.id }, "backend-secret")
-
     return res.status(200).json({
       success: true,
       message: "Registered success",
@@ -47,34 +47,31 @@ exports.register = async (req, res) => {
   }
 }
 
-exports.forgotPassword = (req, res) => {
-  const { email } = req.body
-  authModel.selectUserByEmail(email, (err, { rows: users }) => {
-    if (err) {
-      return errorHandler(err, res)
-    }
-    if (users.length) {
-      const [user] = users
+
+exports.forgotPassword = async (req, res) => {
+  try{
+    const {email} = req.body;
+    const user = await authModel.selectUserByEmail(email)
+    if(user){
       const data = {
         email,
         userId: user.id,
-        code: Math.ceil(Math.random() * 90000)
+        code: Math.ceil(Math.random() * 90000 + 10000)
       }
-      resetPasswordModel.insertResetPassword(data, (err, { rows: results }) => {
-        if (results.length) {
-          return res.status(200).json({
-            success: true,
-            message: "Reset Password has been requested"
-          })
-        }
+      const requestResetPassword = await forgotPasswordModel.createForgotPassword(data);
+      return res.status(200).json({
+        success: true,
+        message: "Reset password has been requested",
       })
     } else {
       return res.status(400).json({
-        success: false,
-        message: "user not found"
+        success: true,
+        message: "Request failed, user doesn't exist"
       })
     }
-  })
+  } catch (error){
+    return errorHandler(error,res)
+  }
 }
 
 exports.resetPassword = (req, res) => {
