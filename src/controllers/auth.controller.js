@@ -4,45 +4,31 @@ const movieModel = require('../models/movies.models')
 const errorHandler = require('../helpers/errorHandler.helpers')
 const jwt = require('jsonwebtoken')
 const argon = require('argon2')
-// const { RowDescriptionMessage } = require('pg-protocol/dist/messages')
-exports.login = (req, res) => {
-  authModel.selectUserByEmail(req.body.email, (err, { rows }) => {
-    if (rows.length) {
-      const [user] = rows
-      if (req.body.password === user.password) {
-        const token = jwt.sign({ id: user.id }, 'backend-secret')
-        return res.status(200).json({
-          success: true,
-          message: 'login success',
-          results: {
-            token
-          }
-        })
-      }
+
+
+exports.login = async(req, res) => {
+  try{
+    const user = await authModel.selectUserByEmail(req.body.email)
+    const token = jwt.sign({id: user.id}, 'backend-secret')
+    if(await argon.verify(user.password, req.body.password)){
+      return res.status(200).json({
+        success: true,
+        message: "Login success",
+        results: {
+          token,
+        }
+      })
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "Wrong email or Password"
+      })
     }
-    return res.status(401).json({
-      success: false,
-      message: 'wrong email/password'
-    })
-  })
+  } catch (err){
+    if(err) errorHandler(err, res)
+  }
 }
 
-// exports.register = (req, res)=> {
-//   return authModel.insertUser(req.body, (err,data)=> {
-//     if(err){
-//       return errorHandler(err,res)
-//     }
-//     const { rows: users } = data;
-//     const [user] = users;
-//     const token = jwt.sign({id: user.id}, "backend-secret")
-
-//     return res.status(200).json({
-//       success: true,
-//       message: "Registered success",
-//       results: { token }
-//     })
-//   })
-// }
 
 exports.register = async (req, res) => {
   try {
