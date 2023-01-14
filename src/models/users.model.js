@@ -17,10 +17,21 @@ exports.insertUser = async(data, cb) => {
   }
 }
 
-exports.editUser = (id,data,cb)=> {
+// exports.editUser = (id,data,cb)=> {
+//   const sql = `UPDATE users SET "picture" = COALESCE(NULLIF($2, '')::VARCHAR, "picture"), "firstName" = COALESCE(NULLIF($3, '')::VARCHAR, "firstName"), "lastName" = COALESCE(NULLIF($4, '')::VARCHAR, "lastName"), "phoneNumber" = COALESCE(NULLIF($5, '')::VARCHAR, "phoneNumber"), "email" = COALESCE(NULLIF($6, '')::VARCHAR, "email"), "password" = COALESCE(NULLIF($7, '')::VARCHAR, "password") WHERE "id" = $1 RETURNING *`;
+//   const value = [id, data.picture, data.firstName, data.lastName, data.phoneNumber, data.email, data.password]
+//   db.query(sql,value,cb)
+// }
+
+exports.editUser = async (data, id) =>{
+  try{
   const sql = `UPDATE users SET "picture" = COALESCE(NULLIF($2, '')::VARCHAR, "picture"), "firstName" = COALESCE(NULLIF($3, '')::VARCHAR, "firstName"), "lastName" = COALESCE(NULLIF($4, '')::VARCHAR, "lastName"), "phoneNumber" = COALESCE(NULLIF($5, '')::VARCHAR, "phoneNumber"), "email" = COALESCE(NULLIF($6, '')::VARCHAR, "email"), "password" = COALESCE(NULLIF($7, '')::VARCHAR, "password") WHERE "id" = $1 RETURNING *`;
-  const value = [id, data.picture, data.firstName, data.lastName, data.phoneNumber, data.email, data.password]
-  db.query(sql,value,cb)
+  const values = [id, data.picture, data.firstName, data.lastName, data.phoneNumber, data.email, data.password]
+  const newUser = await db.query(sql, values)
+  return newUser.rows[0]
+  } catch (error){
+    if (error) throw error
+  }
 }
 
 exports.removeUser = (id,cb)=> {

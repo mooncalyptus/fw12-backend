@@ -1,5 +1,4 @@
 const authModel = require('../models/users.model')
-const resetPasswordModel = require('../models/resetPassword.model')
 const forgotPasswordModel = require('../models/forgotPassword.models')
 const movieModel = require('../models/movies.models')
 const errorHandler = require('../helpers/errorHandler.helpers')
@@ -74,50 +73,39 @@ exports.forgotPassword = async (req, res) => {
   }
 }
 
-exports.resetPassword = (req, res) => {
-  const { password, confirmPassword } = req.body
-  if (password == confirmPassword) {
-    resetPasswordModel.selectResetPasswordByEmailAndCode(req.body, (err, data) => {
-      if (err) {
-        return errorHandler(err, res)
-      }
-      if (data.rows.length) {
-        const [resetRequest] = data.rows
-        // console.log(resetRequest)
-        const output = {
-          id: resetRequest.userId,
-          password: password
+exports.resetPassword = async (req, res) => {
+  try{
+    const {password, confirmPassword} = req.body
+    if(password === confirmPassword){
+      const resetRequest = await forgotPasswordModel.selectForgotPasswordByEmailAndCode(req.body)
+      if(resetRequest){
+        console.log(resetRequest)
+        if(new Date(resetRequest.createdAt).getTime() + 15 * 60 * 1000 < new Date().getTime()){
+          throw Error ('Code Expired')
         }
-        authModel.editUser(output, (err, data) => {
-          if (err) {
-            return errorHandler(err, res)
-          }
-          if (data.rows.length) {
-            resetPasswordModel.removeResetPassword(resetRequest.id, (err, data) => {
-              if (data.rows.length) {
-                return res.status(200).json({
-                  success: true,
-                  message: "password updated"
-                })
-              }
-            })
-          }
-        })
-      } else {
-        return res.status(400).json({
-          success: false,
-          message: 'reset request not found'
+        const data = {
+          id: resetRequest.userId,
+          password: await argon.hash(password)
+        }
+
+        const user = await authModel.editUser(data, resetRequest.userId)
+        const forgotPassword = await forgotPasswordModel.deleteForgotPassword(resetRequest.id)
+        return res.status(200).json({
+          success: true,
+          message: "Password success updated"
         })
       }
-    })
-  } else {
-    return res.status(400).json({
-      success: false,
-      message: 'password and confirm password not match'
-    })
+    }else{
+      return res.status(401).json({
+        success: false,
+        message: "Password and confirm password not match"
+      })
+    }
+  } catch (error){
+    console.log(error)
+    return errorHandler(error, res)
   }
 }
-
 exports.upcoming = (req, res) => {
   movieModel.upcomingMovie(req.query, (err, data) => {
     if (err) {
