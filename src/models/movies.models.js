@@ -5,11 +5,7 @@ exports.displayMovies = (filter, cb) => {
   const values = [filter.limit, filter.offset, `%${filter.search}%`]
   db.query(sql,values,cb)
 }
-// exports.selectOneMovies = (data,cb)=> {
-//   const sql = `SELECT * FROM movies WHERE id=$1`;
-//   const values = [data.id]
-//   db.query(sql, values, cb)
-// }
+
 exports.countAllMovies = (filter,cb)=> {
   const sql = `SELECT COUNT(*) as "dataCount" FROM movies WHERE title LIKE $1;`
   const values = [`%${filter.search}%`]
