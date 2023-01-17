@@ -1,4 +1,4 @@
-const {insertUser, removeUser, displayUser, editUser} = require('../models/users.model')
+const {insertUser, removeUser, displayUser, editUser, selectUserById} = require('../models/users.model')
 const errorHandler = require('../helpers/errorHandler.helpers')
 exports.readAllUsers = (req, res) => {
   displayUser(req.query, (err, data)=> {
@@ -75,4 +75,17 @@ exports.deleteUsers = (req,res)=> {
       message: "Data deleted successfully"
     })
   })
+}
+
+exports.getUserById = async (req, res) => {
+  try{
+    const Users = await selectUserById(req.params.id)
+    res.status(200).json({
+      success: true,
+      message: "User retrieved successfully",
+      results: Users,
+    })
+  } catch (error) {
+    if (error) return errorHandler(error, res)
+  }
 }
