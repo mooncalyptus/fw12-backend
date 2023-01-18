@@ -88,7 +88,7 @@ exports.resetPassword = async (req, res) => {
           password: await argon.hash(password)
         }
 
-        const user = await authModel.editUser(data, resetRequest.userId)
+        const user = await authModel.updateUsers(data, resetRequest.userId)
         const forgotPassword = await forgotPasswordModel.deleteForgotPassword(resetRequest.id)
         return res.status(200).json({
           success: true,

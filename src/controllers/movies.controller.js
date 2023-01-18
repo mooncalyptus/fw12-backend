@@ -1,4 +1,6 @@
-const {displayMovies, insertMovies, removeMovies, editMovies, nowShowingMovie, countAllMovies, selectOneMovies} = require('../models/movies.models')
+const { displayMovies, insertMovies, removeMovies, editMovies, nowShowingMovie, countAllMovies, selectOneMovies } = require('../models/movies.models')
+const filter = require('../helpers/filter.helpers')
+const errorHandler = require('../helpers/errorHandler.helpers')
 
 exports.readAllMovies = (req, res)=> {
   req.query.limit = parseInt(req.query.limit) || 5
@@ -48,6 +50,37 @@ const pageInfo = {
     })
 }
 
+// exports.readAllMovies = async (req, res) => {
+//   try{
+//     // return filterHelper()
+//     const filterMovie = await countAllMovies(filter, (err, data)=> {
+//       if(err){
+//         console.log(err)
+//         return res.status(500).json({
+//           success: false,
+//           message: 'Something happen in our backend'
+//         })
+//       }
+//       const displayMovies = displayMovies(filter, (err, data)=> {
+//         if(err){
+//           console.log(err)
+//           return res.status(500).json({
+//             success: false,
+//             message: 'Something happen in our backend'
+//           })
+//         }
+//         return res.status(200).json({
+//           success: true,
+//           pageInfo,
+//           results: data.rows
+//         })
+//       })
+//     })
+//   } catch (error) {
+//     if (error) throw error
+//   }
+//   }
+
 // exports.selectOneMovies = (req, res)=> {
 //   selectOneMovies(req.params, (err, data)=> {
 //     if(err){
@@ -64,75 +97,79 @@ const pageInfo = {
 //     })
 //   })
 // }
-exports.createMovies = (req, res)=> {
-  if(req.file){
-    console.log(req.file)
-    req.body.picture = req.file.filename
+
+exports.createMovies = async (req, res) => {
+  try {
+    if (req.file) {
+      console.log(req.file)
+      req.body.picture = req.file.filename
+    }
+    const newMovies = await insertMovies(req.body, (err, data) => {
+      if (err) {
+        console.log(err)
+        return res.status(500).json({
+          success: false,
+          message: "Data created failed"
+        })
+      }
+      return res.status(200).json({
+        success: true,
+        message: "Data created successfully",
+        results: data.rows[0]
+      })
+    })
+  } catch (error) {
+    if(error) throw error
   }
-  insertMovies(req.body, (err, data)=> {
-    if(err){
-      console.log(err)
-      return res.status(500).json({
-        success: false,
-        message: "Data created failed"
+}
+exports.updateMovies = (req, res) => {
+      if (req.file) {
+        console.log(req.file)
+        req.body.picture = req.file.filename
+      }
+      editMovies(req.params.id, req.body, (err, data) => {
+        if (err) {
+          console.log(err)
+          return res.status(500).json({
+            success: false,
+            message: 'Something happen in our backend',
+          })
+        }
+        return res.status(200).json({
+          success: true,
+          message: 'Data updated successfully'
+        })
       })
     }
-    return res.status(200).json({
-      success: true,
-      message: "Data created successfully",
-      results: data.rows[0]
-    })
-  })
-}
 
-exports.updateMovies = (req, res)=> {
-  if(req.file){
-    console.log(req.file)
-    req.body.picture = req.file.filename
-  }
-  editMovies(req.params.id, req.body, (err,data)=> {
-    if(err){
-      console.log(err)
-      return res.status(500).json({
-        success: false,
-        message: 'Something happen in our backend',
+exports.deleteMovies = (req, res) => {
+      removeMovies(req.params.id, (err, data) => {
+        if (err) {
+          console.log(err)
+          return res.status(500).json({
+            success: false,
+            message: 'Something happen in our backend',
+          })
+        }
+        return res.status(200).json({
+          success: true,
+          message: "Data deleted successfully"
+        })
       })
     }
-    return res.status(200).json({
-      success: true,
-      message: 'Data updated successfully'
-    })
-  })
-}
 
-exports.deleteMovies = (req,res)=> {
-  removeMovies(req.params.id, (err, data)=> {
-    if(err){
-      console.log(err)
-      return res.status(500).json({
-        success: false,
-        message: 'Something happen in our backend',
+exports.nowShowing = (req, res) => {
+      nowShowingMovie((err, data) => {
+        if (err) {
+          return res.status(500).json({
+            success: false,
+            message: 'Something happen in our backend'
+          })
+        }
+        return res.status(200).json({
+          success: true,
+          message: 'Showed',
+          results: data.rows
+        })
       })
     }
-    return res.status(200).json({
-      success: true,
-      message: "Data deleted successfully"
-    })
-  })
-}
-
-exports.nowShowing = (req, res)=> {
-nowShowingMovie((err, data)=> {
-  if(err){
-    return res.status(500).json({
-      success: false,
-      message: 'Something happen in our backend'
-    })
-  }
-  return res.status(200).json({
-    success: true,
-    message: 'Showed',
-    results : data.rows
-  })
-})
-}

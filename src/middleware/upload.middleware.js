@@ -15,7 +15,7 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: "uploads",
-    format: async (req, file) => path.extname(file.originalName).slice("1"),
+    format: async (req, file) => path.extname(file.originalname).slice("1"),
     public_id: (req, file) => {
       const randomNumber = Math.round(Math.random() * 90000)
       const name = `${new Date().getDate()}_${randomNumber}`
@@ -30,6 +30,7 @@ const upload = multer({
     const format = ["jpg", "png", "jpeg"]
     const extension = file.originalname.split(".")
     const cekFormatFile = format.includes(extension[extension.length - 1])
+    console.log(file)
     if(!cekFormatFile){
       return callback(new Error("Format picture not valid"))
     } else {
@@ -52,12 +53,3 @@ const uploadMiddleware = (req, res, next) => {
 }
 
 module.exports = {uploadMiddleware, cloudinary}
-// const uploadMiddleware = upload.single("picture")
-// module.exports = (req, res, next)=>{
-//   uploadMiddleware(req, res, (err)=> {
-//     if(err){
-//       return errorHandler(err, res)
-//     }
-//     next()
-//   })
-// }

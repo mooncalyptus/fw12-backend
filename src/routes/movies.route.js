@@ -1,7 +1,7 @@
 const { upcoming } = require('../controllers/auth.controller')
 const {readAllMovies, createMovies, updateMovies, deleteMovies, nowShowing, selectOneMovies} = require('../controllers/movies.controller')
 const authMiddleware = require('../middleware/auth.middleware')
-const uploadMiddleware = require('../middleware/upload.middleware')
+const {uploadMiddleware} = require('../middleware/upload.middleware')
 
 const moviesRouters = require('express').Router()
 
