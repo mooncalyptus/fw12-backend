@@ -34,6 +34,7 @@ exports.updateProfile = async (req, res) => {
       req.body.password = await argon.hash(password)
     }
     const updateUser = await updateUsers(req.body, req.userData.id)
+    console.log(req.body)
     return res.status(200).json({
       success: true,
       message: "Profile updated",
@@ -41,6 +42,6 @@ exports.updateProfile = async (req, res) => {
     })
   } catch (error) {
     console.log(error)
-    return errorHandler(error, res)
+    // return errorHandler(error, res)
   }
 }
