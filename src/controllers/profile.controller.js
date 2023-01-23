@@ -30,9 +30,9 @@ exports.updateProfile = async (req, res) => {
       req.body.picture = req.file.path
       await selectUserById(req.userData.id)
     }
-    if(password === confirmPassword){
-      req.body.password = await argon.hash(password)
-    }
+    // if(password === confirmPassword){
+    //   req.body.password = await argon.hash(password)
+    // }
     const updateUser = await updateUsers(req.body, req.userData.id)
     console.log(req.body)
     return res.status(200).json({
