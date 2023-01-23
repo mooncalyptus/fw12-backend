@@ -98,29 +98,21 @@ const pageInfo = {
 //   })
 // }
 
-exports.createMovies = async (req, res) => {
-  try {
+exports.createMovies = (req, res) => {
     if (req.file) {
-      console.log(req.file)
-      req.body.picture = req.file.filename
-    }
-    const newMovies = await insertMovies(req.body, (err, data) => {
-      if (err) {
-        console.log(err)
-        return res.status(500).json({
-          success: false,
-          message: "Data created failed"
-        })
-      }
-      return res.status(200).json({
-        success: true,
-        message: "Data created successfully",
-        results: data.rows[0]
-      })
-    })
-  } catch (error) {
-    if(error) throw error
+    console.log(req.file)
+    req.body.picture = req.file.filename
   }
+  insertMovies(req.body, (err, data) => {
+    if (err) {
+      return errorHandler(err, res);
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Create Movie ID success",
+      results: data.rows[0],
+    });
+  });
 }
 exports.updateMovies = (req, res) => {
       if (req.file) {

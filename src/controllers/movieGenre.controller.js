@@ -1,7 +1,8 @@
-const {insertMovieSchedule, removeMovieSchedule, displayMovieSchedule, editMovieSchedule} = require('../models/movieSchedule.models')
-const errorHandler = require ('../helpers/errorHandler.helpers')
-exports.readAllMovieSchedule = (req, res) => {
-  displayMovieSchedule((err, data)=> {
+const {insertMovieGenre, updateMovieGenre, deleteMovieGenre, displayMovieGenre} = require('../models/moviesGenre.models')
+const errorHandler = require('../helpers/errorHandler.helpers')
+
+exports.readAllMovieGenre = (req, res) => {
+  displayMovieGenre((err, data)=> {
     if(err){
       console.log(err)
       return res.status(500).json({
@@ -16,22 +17,22 @@ exports.readAllMovieSchedule = (req, res) => {
   })
 }
 
-exports.createMovieSchedule = (req, res)=> {
-  insertMovieSchedule(req.body, (err,data)=>{
+exports.createMovieGenre = (req, res)=> {
+  insertMovieGenre(req.body, (err,data)=>{
     if(err){
       console.log(err)
       return errorHandler(err,res)
   }
   return res.status(200).json({
     success: true,
-    message: "Movie Schedule created successfully",
+    message: "Data created successfully",
     results: data.rows
   })
   })
 }
 
-exports.updateMovieSchedule = (req, res)=> {
-  editMovieSchedule(req.params.id, req.body, (err,data)=> {
+exports.updateMovieGenre = (req, res)=> {
+  updateMovieGenre(req.params.id, req.body, (err,data)=> {
     if(err){
       console.log(err)
       return res.status(500).json({
@@ -41,14 +42,14 @@ exports.updateMovieSchedule = (req, res)=> {
     }
     return res.status(200).json({
       success: true,
-      message: 'User updated successfully',
+      message: 'Data updated successfully',
       results: data.rows[0]
     })
   })
 }
 
-exports.deleteMovieSchedule = (req,res)=> {
-  removeMovieSchedule(req.params.id, (err, data)=> {
+exports.deleteMovieGenre = (req,res)=> {
+  deleteMovieGenre(req.params.id, (err, data)=> {
     if(err){
       console.log(err)
       return res.status(500).json({

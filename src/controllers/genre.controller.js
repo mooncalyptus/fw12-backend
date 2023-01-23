@@ -24,7 +24,7 @@ exports.createGenre = (req, res)=> {
   }
   return res.status(200).json({
     success: true,
-    message: "User created successfully",
+    message: "New Genre added successfully",
     results: data.rows[0]
   })
   })

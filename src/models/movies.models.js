@@ -40,16 +40,19 @@ exports.countAllMovies = (filter,cb)=> {
 //   db.query(sql, value, cb)
 // }
 
-exports.insertMovies = async (data) => {
-  try {
-    const sql = 'INSERT INTO movies ("title","picture","releaseDate","director","duration","synopsis") VALUES ($1, $2, $3,$4,$5,$6) RETURNING *';
-    const values = [data.title, data.picture, data.releaseDate, data.director, data.duration, data.synopsis]
-    const newMovies = await (sql, values)
-    return newMovies.rows[0]
-  } catch (error) {
-    if (error) throw error
-  }
-}
+exports.insertMovies = (data, cb) => {
+  const sql =
+  'INSERT INTO movies("title", "picture", "releaseDate", "director", "duration", "synopsis") VALUES($1, $2, $3, $4, $5, $6) RETURNING *';
+const value = [
+  data.title,
+  data.picture,
+  data.releaseDate,
+  data.director,
+  data.duration,
+  data.synopsis,
+];
+db.query(sql, value, cb);
+};
 
 // exports.editMovies = (id, data, cb)=> {
 //   const sql = `UPDATE "movies" SET "title" = COALESCE(NULLIF($2, '')::VARCHAR, "title"), "picture" = COALESCE(NULLIF($3, '')::VARCHAR, "picture"), "releaseDate" = COALESCE(NULLIF($4, '')::TIMESTAMPTZ, "releaseDate"), "director" = COALESCE(NULLIF($5, '')::VARCHAR, "director"), "duration" = COALESCE(NULLIF($6, '')::TIME, "duration"), "synopsis" = COALESCE(NULLIF($7, '')::TEXT, "synopsis") WHERE id=$1 RETURNING *`;

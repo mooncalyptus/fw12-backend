@@ -1,4 +1,5 @@
 const {insertCasts, removeCasts, displayCasts, selectCountAllCasts, editCasts} = require('../models/casts.model')
+const errorHandler = require('../helpers/errorHandler.helpers')
 
 exports.readAllCasts = (req, res) => {
   // console.log(req.query)
@@ -48,7 +49,7 @@ exports.createCasts = (req, res)=> {
   }
   return res.status(200).json({
     success: true,
-    message: "User created successfully",
+    message: "Cast created successfully",
     results: data.rows[0]
   })
   })
