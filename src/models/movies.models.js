@@ -88,7 +88,7 @@ exports.removeMovies = async (id) => {
 }
 
 exports.upcomingMovie = (data, cb) => {
-  const sql = `SELECT * FROM movies WHERE date_part('year', "releaseDate")::TEXT = COALESCE(NULLIF($1,''), date_part('year', current_date)::TEXT) AND date_part('month', "releaseDate")::TEXT = COALESCE(NULLIF($2,''), date_part('month', current_date)::TEXT)`;
+  const sql = `SELECT * FROM movies WHERE date_part('year', "releaseDate")::TEXT = COALESCE(NULLIF($1,''), date_part('year', current_date)::TEXT) AND date_part('month', "releaseDate")::TEXT = COALESCE(NULLIF($2,''), date_part('month', current_date)::TEXT) LIMIT 3`;
   const values = [data.year, data.month]
   db.query(sql, values, cb)
 }
@@ -99,6 +99,6 @@ exports.nowShowingMovie = (cb) => {
   JOIN "movieSchedule" ms ON ms."movieId" = m.id
   LEFT JOIN "movieGenre" mg ON mg."movieId" = m.id
   JOIN "genre" g ON g.id = mg."genreId" WHERE current_date
-  BETWEEN ms."startDate" AND ms."endDate" GROUP BY m.id, ms.id LIMIT 5`;
+  BETWEEN ms."startDate" AND ms."endDate" GROUP BY m.id, ms.id LIMIT 3`;
   db.query(sql, cb);
 }
