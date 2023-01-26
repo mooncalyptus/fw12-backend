@@ -5,7 +5,7 @@ const {uploadMiddleware} = require('../middleware/upload.middleware')
 
 const moviesRouters = require('express').Router()
 
-// moviesRouters.get('/:id', selectOneMovies)
+moviesRouters.get('/:id', selectOneMovies)
 moviesRouters.get('/', readAllMovies)
 moviesRouters.get('/upcoming', upcoming)
 moviesRouters.get('/nowShowing', nowShowing)

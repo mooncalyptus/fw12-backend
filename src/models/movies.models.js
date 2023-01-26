@@ -6,39 +6,31 @@ exports.displayMovies = (filter, cb) => {
   db.query(sql,values,cb)
 }
 
-// exports.displayMovies = async (filter, cb) => {
-//   try {
-//     const sql = `SELECT * FROM movies WHERE title LIKE $3 ORDER BY "${filter.sortBy}" ${filter.sort} LIMIT $1 OFFSET $2`;
-//     const values = [filter.limit, filter.offset, `%${filter.search}%`]
-//     const getMovies = await (sql, values, cb)
-//     return getMovies.rows
-//   } catch (error) {
-//     if (error) throw error
-//   }
+// exports.displayMoviesById = (data, cb) => {
+//   const sql = 'SELECT * FROM movies WHERE id=$1';
+//   const values = [data.id];
+//   console.log(values);
+//   const result = db.query(sql, values, cb);
+//   console.log(result);
+//   // return cb(null, result)
 // }
+
+exports.displayMoviesById = async (id) => {
+  try{
+    const sql = `SELECT * FROM "movies" WHERE id=$1`;
+    const newMovies = await db.query(sql, [id]);
+    return newMovies.rows[0];
+  } catch (error) {
+    if (error) throw error;
+  }
+}
+
 
 exports.countAllMovies = (filter,cb)=> {
   const sql = `SELECT COUNT(*) as "dataCount" FROM movies WHERE title LIKE $1;`
   const values = [`%${filter.search}%`]
   db.query(sql, values, cb)
 }
-
-// exports.countAllMovies = async (filter, cb) => {
-//   try {
-//     const sql = `SELECT COUNT(*) as "dataCount" FROM movies WHERE title LIKE $1;`
-//     const values = [`%${filter.search}%`]
-//     const getMovies = await (sql, values, cb)
-//     return getMovies.rows
-//   } catch (error) {
-//     if (error) throw error
-//   }
-// }
-
-// exports.insertMovies = (data, cb)=> {
-//   const sql = 'INSERT INTO movies ("title","picture","releaseDate","director","duration","synopsis") VALUES ($1, $2, $3,$4,$5,$6) RETURNING *';
-//   const value = [data.title, data.picture, data.releaseDate, data.director, data.duration, data.synopsis]
-//   db.query(sql, value, cb)
-// }
 
 exports.insertMovies = (data, cb) => {
   const sql =

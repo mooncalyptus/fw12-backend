@@ -1,13 +1,13 @@
-const { displayMovies, insertMovies, removeMovies, editMovies, nowShowingMovie, countAllMovies, selectOneMovies } = require('../models/movies.models')
+const { displayMovies, insertMovies, removeMovies, editMovies, nowShowingMovie, countAllMovies, displayMoviesById } = require('../models/movies.models')
 const filter = require('../helpers/filter.helpers')
 const errorHandler = require('../helpers/errorHandler.helpers')
 
 exports.readAllMovies = (req, res)=> {
-  req.query.limit = parseInt(req.query.limit) || 5
+  req.query.limit = parseInt(req.query.limit) || 6
   req.query.page = parseInt(req.query.page) || 1
   req.query.search = req.query.search || ''
-  const sortable = ['title','createdAt','updatedAt']
-  req.query.sortBy = (sortable.includes(req.query.sortBy) && req.query.sortBy)|| 'createdAt'
+  const sortable = ['title']
+  req.query.sortBy = (sortable.includes(req.query.sortBy) && req.query.sortBy)|| 'title'
   req.query.sort = req.query.sort || 'ASC'
   const filter = {
     limit: req.query.limit,
@@ -82,7 +82,8 @@ const pageInfo = {
 //   }
 
 // exports.selectOneMovies = (req, res)=> {
-//   selectOneMovies(req.params, (err, data)=> {
+//   displayMoviesById(req.params, (err, data)=> {
+//     console.log(data.rows[0])
 //     if(err){
 //       console.log(err)
 //       return res.status(500).json({
@@ -97,6 +98,19 @@ const pageInfo = {
 //     })
 //   })
 // }
+
+exports.selectOneMovies = async (req, res) => {
+  try{
+    const movies = await displayMoviesById(req.params.id)
+    res.status(200).json({
+      success: true,
+      message: "Movies retrieved successfully",
+      results: movies,
+    })
+  } catch (error) {
+    if (error) throw error;
+  }
+}
 
 exports.createMovies = (req, res) => {
     if (req.file) {
