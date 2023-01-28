@@ -3,21 +3,14 @@ const db = require('../helpers/db.helpers')
 exports.displayMovies = (filter, cb) => {
   const sql = `SELECT * FROM movies WHERE title LIKE $3 ORDER BY "${filter.sortBy}" ${filter.sort} LIMIT $1 OFFSET $2;`
   const values = [filter.limit, filter.offset, `%${filter.search}%`]
-  db.query(sql,values,cb)
+  db.query(sql, values, cb)
 }
 
-// exports.displayMoviesById = (data, cb) => {
-//   const sql = 'SELECT * FROM movies WHERE id=$1';
-//   const values = [data.id];
-//   console.log(values);
-//   const result = db.query(sql, values, cb);
-//   console.log(result);
-//   // return cb(null, result)
-// }
 
 exports.displayMoviesById = async (id) => {
-  try{
+  try {
     const sql = `SELECT * FROM "movies" WHERE id=$1`;
+    // const sql = `SELECT m.id, m.genreFROM "movies" m JOIN "movieGenre" mg ON mg."movieId" = m.id JOIN "genre" g ON g.id = mg."genreId" `
     const newMovies = await db.query(sql, [id]);
     return newMovies.rows[0];
   } catch (error) {
@@ -26,7 +19,7 @@ exports.displayMoviesById = async (id) => {
 }
 
 
-exports.countAllMovies = (filter,cb)=> {
+exports.countAllMovies = (filter, cb) => {
   const sql = `SELECT COUNT(*) as "dataCount" FROM movies WHERE title LIKE $1;`
   const values = [`%${filter.search}%`]
   db.query(sql, values, cb)
@@ -34,16 +27,16 @@ exports.countAllMovies = (filter,cb)=> {
 
 exports.insertMovies = (data, cb) => {
   const sql =
-  'INSERT INTO movies("title", "picture", "releaseDate", "director", "duration", "synopsis") VALUES($1, $2, $3, $4, $5, $6) RETURNING *';
-const value = [
-  data.title,
-  data.picture,
-  data.releaseDate,
-  data.director,
-  data.duration,
-  data.synopsis,
-];
-db.query(sql, value, cb);
+    'INSERT INTO movies("title", "picture", "releaseDate", "director", "duration", "synopsis") VALUES($1, $2, $3, $4, $5, $6) RETURNING *';
+  const value = [
+    data.title,
+    data.picture,
+    data.releaseDate,
+    data.director,
+    data.duration,
+    data.synopsis,
+  ];
+  db.query(sql, value, cb);
 };
 
 // exports.editMovies = (id, data, cb)=> {
@@ -71,9 +64,9 @@ exports.editMovies = async (id, data) => {
 
 exports.removeMovies = async (id) => {
   try {
-      const sql = 'DELETE FROM movies WHERE id = $1 RETURNING *';
-        const values = [id]
-        const newMovies = await db.query(sql, values)
+    const sql = 'DELETE FROM movies WHERE id = $1 RETURNING *';
+    const values = [id]
+    const newMovies = await db.query(sql, values)
   } catch (error) {
     if (error) throw error
   }
@@ -86,6 +79,7 @@ exports.upcomingMovie = (data, cb) => {
 }
 
 exports.nowShowingMovie = (cb) => {
+  console.log('models now Showing')
   const sql = `SELECT m.id, m.picture,m.title, ms."startDate", ms."endDate",string_agg(g.name, ', ') AS genre
   FROM movies m
   JOIN "movieSchedule" ms ON ms."movieId" = m.id
@@ -94,3 +88,18 @@ exports.nowShowingMovie = (cb) => {
   BETWEEN ms."startDate" AND ms."endDate" GROUP BY m.id, ms.id LIMIT 3`;
   db.query(sql, cb);
 }
+
+// exports.nowShowingMovie = async () => {
+//   try {
+//   const sql = `SELECT m.id, m.picture,m.title, ms."startDate", ms."endDate",string_agg(g.name, ', ') AS genre
+//   FROM movies m
+//   JOIN "movieSchedule" ms ON ms."movieId" = m.id
+//   LEFT JOIN "movieGenre" mg ON mg."movieId" = m.id
+//   JOIN "genre" g ON g.id = mg."genreId" WHERE current_date
+//   BETWEEN ms."startDate" AND ms."endDate" GROUP BY m.id, ms.id LIMIT 3`;
+//   const nowShowing = await db.query(sql)
+//   return nowShowing.rows
+//   } catch (error){
+//     if(error) throw error
+//   }
+// }

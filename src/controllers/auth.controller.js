@@ -36,6 +36,7 @@ exports.login = async(req, res) => {
 
 exports.register = async (req, res) => {
   try {
+    console.log(req.body);
     req.body.password = await argon.hash(req.body.password)
     const user = await authModel.createUsers(req.body)
     const token = jwt.sign({ id: user.id }, "backend-secret")

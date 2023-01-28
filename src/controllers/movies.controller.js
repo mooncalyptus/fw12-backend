@@ -165,8 +165,10 @@ exports.deleteMovies = (req, res) => {
     }
 
 exports.nowShowing = (req, res) => {
+  console.log('controller')
       nowShowingMovie((err, data) => {
         if (err) {
+          console.log(err);
           return res.status(500).json({
             success: false,
             message: 'Something happen in our backend'
@@ -179,3 +181,17 @@ exports.nowShowing = (req, res) => {
         })
       })
     }
+
+// exports.nowShowing = async (req, res) => {
+//   try {
+//     const allNowShowing = await nowShowingMovie()
+//     res.status(200).json({
+//       success: true,
+//       message: "Showing all Now Showing Movies",
+//       results: allNowShowing,
+//     })
+//   } catch (error) {
+//     console.log(error)
+//     // if (error) throw error
+//   }
+// }
