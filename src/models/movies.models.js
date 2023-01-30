@@ -89,6 +89,10 @@ exports.nowShowingMovie = (cb) => {
   db.query(sql, cb);
 }
 
+exports.getMovieDetails = (cb) => {
+  const sql = `SELECT m.picture, m.title, m."releaseDate", m.duration, m.director, string_agg(g.name, ', ') AS genre, string_agg(c.name, ', ') AS casts, m.synopsis FROM movies m LEFT JOIN "movieGenre" mg ON mg."movieId" = m.id JOIN "genre" g ON g.id = mg."genreId" LEFT JOIN "movieCasts" mc ON mc."movieId" = m.id JOIN "casts" c ON c.id = mc."castsId" GROUP BY m.id`
+  db.query(sql, cb);
+}
 // exports.nowShowingMovie = async () => {
 //   try {
 //   const sql = `SELECT m.id, m.picture,m.title, ms."startDate", ms."endDate",string_agg(g.name, ', ') AS genre

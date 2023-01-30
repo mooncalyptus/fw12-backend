@@ -1,4 +1,4 @@
-const { displayMovies, insertMovies, removeMovies, editMovies, nowShowingMovie, countAllMovies, displayMoviesById } = require('../models/movies.models')
+const { displayMovies, insertMovies, removeMovies, editMovies, nowShowingMovie, countAllMovies, displayMoviesById, getMovieDetails } = require('../models/movies.models')
 const filter = require('../helpers/filter.helpers')
 const errorHandler = require('../helpers/errorHandler.helpers')
 
@@ -49,55 +49,6 @@ const pageInfo = {
       })
     })
 }
-
-// exports.readAllMovies = async (req, res) => {
-//   try{
-//     // return filterHelper()
-//     const filterMovie = await countAllMovies(filter, (err, data)=> {
-//       if(err){
-//         console.log(err)
-//         return res.status(500).json({
-//           success: false,
-//           message: 'Something happen in our backend'
-//         })
-//       }
-//       const displayMovies = displayMovies(filter, (err, data)=> {
-//         if(err){
-//           console.log(err)
-//           return res.status(500).json({
-//             success: false,
-//             message: 'Something happen in our backend'
-//           })
-//         }
-//         return res.status(200).json({
-//           success: true,
-//           pageInfo,
-//           results: data.rows
-//         })
-//       })
-//     })
-//   } catch (error) {
-//     if (error) throw error
-//   }
-//   }
-
-// exports.selectOneMovies = (req, res)=> {
-//   displayMoviesById(req.params, (err, data)=> {
-//     console.log(data.rows[0])
-//     if(err){
-//       console.log(err)
-//       return res.status(500).json({
-//         success: false,
-//         message: "Error, please check your backend."
-//       })
-//     }
-//     return res.status(200).json({
-//       success: true,
-//       message: "Data selected.",
-//       results: data.rows[0]
-//     })
-//   })
-// }
 
 exports.selectOneMovies = async (req, res) => {
   try{
@@ -182,6 +133,21 @@ exports.nowShowing = (req, res) => {
       })
     }
 
+exports.getMovieDetails = (req, res) => {
+  getMovieDetails((err, data) => {
+    if(err) {
+      return res.status(500).json({
+        success: false,
+        message: `Can't get Details, please check your backend.`
+      })
+    }
+    return res.status(200).json({
+      success: true,
+      message: 'Data displayed successfully',
+      results: data.rows
+    })
+  })
+}
 // exports.nowShowing = async (req, res) => {
 //   try {
 //     const allNowShowing = await nowShowingMovie()
