@@ -2,7 +2,7 @@ const db = require('../helpers/db.helpers')
 
 exports.displayMovies = (filter, cb) => {
   // const sql = `SELECT * FROM movies WHERE title LIKE $3 ORDER BY "${filter.sortBy}" ${filter.sort} LIMIT $1 OFFSET $2;`
-  const sql = `SELECT m.picture, m.title, m."releaseDate", m.duration, m.director, string_agg(g.name, ', ') AS genre, string_agg(c.name, ', ') AS casts, m.synopsis FROM movies m LEFT JOIN "movieGenre" mg ON mg."movieId" = m.id JOIN "genre" g ON g.id = mg."genreId" LEFT JOIN "movieCasts" mc ON mc."movieId" = m.id JOIN "casts" c ON c.id = mc."castsId" WHERE m.title LIKE $3 GROUP BY m.id ORDER BY "${filter.sortBy}" ${filter.sort} LIMIT $1 OFFSET $2`;
+  const sql = `SELECT m.id, m.picture, m.title, m."releaseDate", m.duration, m.director, string_agg(g.name, ', ') AS genre, string_agg(c.name, ', ') AS casts, m.synopsis FROM movies m LEFT JOIN "movieGenre" mg ON mg."movieId" = m.id JOIN "genre" g ON g.id = mg."genreId" LEFT JOIN "movieCasts" mc ON mc."movieId" = m.id JOIN "casts" c ON c.id = mc."castsId" WHERE m.title LIKE $3 GROUP BY m.id ORDER BY "${filter.sortBy}" ${filter.sort} LIMIT $1 OFFSET $2`;
   const values = [filter.limit, filter.offset, `%${filter.search}%`]
   db.query(sql, values, cb)
 }
@@ -10,8 +10,8 @@ exports.displayMovies = (filter, cb) => {
 
 exports.displayMoviesById = async (id) => {
   try {
-    const sql = `SELECT * FROM "movies" WHERE id=$1`;
-    // const sql = `SELECT m.id, m.genreFROM "movies" m JOIN "movieGenre" mg ON mg."movieId" = m.id JOIN "genre" g ON g.id = mg."genreId" `
+    // const sql = `SELECT * FROM "movies" WHERE id=$1`;
+    const sql = `SELECT m.picture, m.title, m."releaseDate", m.duration, m.director, string_agg(g.name, ', ') AS genre, string_agg(c.name, ', ') AS casts, m.synopsis FROM movies m LEFT JOIN "movieGenre" mg ON mg."movieId" = m.id JOIN "genre" g ON g.id = mg."genreId" LEFT JOIN "movieCasts" mc ON mc."movieId" = m.id JOIN "casts" c ON c.id = mc."castsId" WHERE m.id=$1 GROUP BY m.id`;
     const newMovies = await db.query(sql, [id]);
     return newMovies.rows[0];
   } catch (error) {
@@ -80,7 +80,7 @@ exports.upcomingMovie = (data, cb) => {
 }
 
 exports.nowShowingMovie = (cb) => {
-  console.log('models now Showing')
+  // console.log('models now Showing')
   const sql = `SELECT m.id, m.picture,m.title, ms."startDate", ms."endDate",string_agg(g.name, ', ') AS genre
   FROM movies m
   JOIN "movieSchedule" ms ON ms."movieId" = m.id

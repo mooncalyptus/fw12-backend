@@ -116,7 +116,7 @@ exports.deleteMovies = (req, res) => {
     }
 
 exports.nowShowing = (req, res) => {
-  console.log('controller')
+  // console.log('controller')
       nowShowingMovie((err, data) => {
         if (err) {
           console.log(err);
