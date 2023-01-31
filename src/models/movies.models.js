@@ -1,7 +1,8 @@
 const db = require('../helpers/db.helpers')
 
 exports.displayMovies = (filter, cb) => {
-  const sql = `SELECT * FROM movies WHERE title LIKE $3 ORDER BY "${filter.sortBy}" ${filter.sort} LIMIT $1 OFFSET $2;`
+  // const sql = `SELECT * FROM movies WHERE title LIKE $3 ORDER BY "${filter.sortBy}" ${filter.sort} LIMIT $1 OFFSET $2;`
+  const sql = `SELECT m.picture, m.title, m."releaseDate", m.duration, m.director, string_agg(g.name, ', ') AS genre, string_agg(c.name, ', ') AS casts, m.synopsis FROM movies m LEFT JOIN "movieGenre" mg ON mg."movieId" = m.id JOIN "genre" g ON g.id = mg."genreId" LEFT JOIN "movieCasts" mc ON mc."movieId" = m.id JOIN "casts" c ON c.id = mc."castsId" WHERE m.title LIKE $3 ORDER BY "${filter.sortBy}" ${filter.sort} LIMIT $1 OFFSET $2`
   const values = [filter.limit, filter.offset, `%${filter.search}%`]
   db.query(sql, values, cb)
 }
