@@ -11,7 +11,7 @@ exports.displayMovies = (filter, cb) => {
 exports.displayMoviesById = async (id) => {
   try {
     // const sql = `SELECT * FROM "movies" WHERE id=$1`;
-    const sql = `SELECT m.id, m.picture, m.title, m."releaseDate", m.duration, m.director, string_agg(g.name, ', ') AS genre, string_agg(c.name, ', ') AS casts, m.synopsis, ci.name, ci.address, ms.price, string_to_array(string_agg(DISTINCT mst.time::VARCHAR, ', '), ', ') as time FROM "movieScheduleTime" mst JOIN "movieSchedule" ms ON mst."movieScheduleId" = ms.id JOIN cinemas ci on ci.id = ms."cinemasId" JOIN movies m ON ms."movieId" = m.id JOIN "movieGenre" mg ON mg."movieId" = m.id JOIN "genre" g ON g.id = mg."genreId" JOIN "movieCasts" mc ON mc."movieId" = m.id JOIN "casts" c ON c.id = mc."castsId" WHERE m.id=$1 GROUP BY m.id, ms.price, ci.id, ms.id`;
+    const sql = `SELECT m.id, m.picture, m.title, m."releaseDate", m.duration, m.director, string_agg(DISTINCT g.name, ', ') AS genre, string_agg(DISTINCT c.name, ', ') AS casts, m.synopsis, ci.name, ci.address, ms.price, string_to_array(string_agg(DISTINCT mst.time::VARCHAR, ', '), ', ') as time FROM "movieScheduleTime" mst JOIN "movieSchedule" ms ON mst."movieScheduleId" = ms.id JOIN cinemas ci on ci.id = ms."cinemasId" JOIN movies m ON ms."movieId" = m.id JOIN "movieGenre" mg ON mg."movieId" = m.id JOIN "genre" g ON g.id = mg."genreId" JOIN "movieCasts" mc ON mc."movieId" = m.id JOIN "casts" c ON c.id = mc."castsId" WHERE m.id=$1 GROUP BY m.id, ms.price, ci.id, ms.id`;
     const newMovies = await db.query(sql, [id]);
     return newMovies.rows[0];
   } catch (error) {
