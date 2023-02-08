@@ -74,7 +74,7 @@ exports.removeMovies = async (id) => {
 }
 
 exports.upcomingMovie = (data, cb) => {
-  const sql = `SELECT * FROM movies WHERE date_part('year', "releaseDate")::TEXT = COALESCE(NULLIF($1,''), date_part('year', current_date)::TEXT) AND date_part('month', "releaseDate")::TEXT = COALESCE(NULLIF($2,''), date_part('month', current_date)::TEXT) LIMIT 3`;
+  const sql = `SELECT * FROM movies WHERE date_part('year', "releaseDate")::TEXT = COALESCE(NULLIF($1,''), date_part('year', current_date)::TEXT) AND date_part('month', "releaseDate")::TEXT = COALESCE(NULLIF($2,''), date_part('month', current_date)::TEXT) LIMIT 5`;
   const values = [data.year, data.month]
   db.query(sql, values, cb)
 }
