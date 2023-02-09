@@ -86,7 +86,7 @@ exports.nowShowingMovie = (cb) => {
   JOIN "movieSchedule" ms ON ms."movieId" = m.id
   LEFT JOIN "movieGenre" mg ON mg."movieId" = m.id
   JOIN "genre" g ON g.id = mg."genreId" WHERE current_date
-  BETWEEN ms."startDate" AND ms."endDate" GROUP BY m.id, ms.id LIMIT 5`;
+  BETWEEN ms."startDate" AND ms."endDate" GROUP BY m.id, ms.id LIMIT 3`;
   db.query(sql, cb);
 }
 
