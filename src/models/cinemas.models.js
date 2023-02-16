@@ -2,7 +2,7 @@ const db = require('../helpers/db.helpers')
 
 exports.displayCinemas = (cb) => {
   // const sql = 'SELECT * FROM cinemas ORDER BY "createdAt" ASC';
-  const sql = `SELECT ci.name, ci.address, ms.price, string_to_array(string_agg(DISTINCT mst.time::VARCHAR, ', '), ', ') as time FROM "movieScheduleTime" mst JOIN "movieSchedule" ms ON mst."movieScheduleId" = ms.id JOIN cinemas ci on ci.id = ms."cinemasId" GROUP BY ci.id, ms.price, ci.address, ci.name`
+  const sql = `SELECT m.id, m.title, ci.name, ci.address, ci.city, ms.price, t."bookingDate", string_to_array(string_agg(DISTINCT mst.time::VARCHAR, ', '), ', ') as time FROM "movieScheduleTime" mst JOIN "movieSchedule" ms ON mst."movieScheduleId" = ms.id JOIN cinemas ci on ci.id = ms."cinemasId" JOIN transactions t ON ci.id = t."cinemasId" JOIN movies m ON t."movieId" = m.id GROUP BY ci.id, ms.price, ci.address, ci.name, t."bookingDate", ci.city, m.title, m.id`
   db.query(sql,cb)
 }
 
