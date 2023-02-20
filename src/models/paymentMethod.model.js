@@ -1,7 +1,7 @@
 const db = require('../helpers/db.helpers')
 
 exports.displayPayment = (cb) => {
-  const sql = 'SELECT * FROM paymentMethod ORDER BY "createdAt" ASC';
+  const sql = 'SELECT * FROM "paymentMethod" ORDER BY "createdAt" ASC';
   db.query(sql,cb)
 }
 
