@@ -3,15 +3,15 @@ const db = require('../helpers/db.helpers')
 exports.insertOrder = async(data, cb)=> {
     try{
         await db.query("BEGIN")
-    const insertTransactions = `INSERT INTO "transactions" ("bookingDate", "movieId", "cinemasId", "movieScheduleId", "fullName", "email", "phoneNumber", "statusId", "userId", "paymentId") VALUES ($1, $2, $3, $4,$5, $6, $7, $8, $9, $10) RETURNING "bookingDate", "fullName", "email", "phoneNumber", "userId"`;
-    const sqlTransactions = await db.query(insertTransactions, [data.bookingDate, data.movieId, data.cinemasId, data.movieScheduleId, data.fullName, data.email, data.phoneNumber, data.statusId, data.userId, data.paymentId])
-    const insertReservedSeat = `INSERT INTO "reservedSeat" ("seatNum", "transactionId") VALUES ($1, $2) RETURNING "seatNum"`;
-    const reservedSeatValue = [data.seatNum, sqlTransactions.rows[0].id]
+    const insertTransactions = `INSERT INTO "transactions" ("fullName", "email", "phoneNumber", "paymentMethodId", "userId") VALUES ($1, $2, $3, $4,$5) RETURNING id`;
+    const sqlTransactions = await db.query(insertTransactions, [data.fullName, data.email, data.phoneNumber, data.paymentMethodId, data.userId])
+    const insertReservedSeat = `INSERT INTO "reservedSeat" ("seatNumber", "transactionId", "bookingDate", "bookingTime", "movieId", "cinemaId", "price", "total_price") VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING "seatNumber"`;
+    const reservedSeatValue = [data.seatNumber, sqlTransactions.rows[0].id, data.bookingDate, data.bookingTime, data.movieId, data.cinemaId, data.price, data.total_price]
     const sqlReservedSeat = await db.query(insertReservedSeat, reservedSeatValue);
     await db.query("COMMIT")
     const dataOrder = {
         transactions : sqlTransactions.rows[0],
-        seatNum: sqlReservedSeat
+        seatNumber: sqlReservedSeat
     }
     cb(null, dataOrder);
 } catch (e){

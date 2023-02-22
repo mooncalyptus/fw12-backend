@@ -26,7 +26,7 @@ exports.removeCinemas = (id,cb)=> {
 }
 
 exports.selectCinemas = (id, date, city, cb) => {
-  const sql = `SELECT DISTINCT m.id, m.title, ci.name, ci.address, ci.city, ms.price, string_to_array(string_agg(DISTINCT mst.time::VARCHAR, ', '), ', ') as time FROM "movieSchedule" ms
+  const sql = `SELECT DISTINCT m.id, ci.id as "cinemaId", m.title, ci.name, ci.address, ci.city, ms.price, string_to_array(string_agg(DISTINCT mst.time::VARCHAR, ', '), ', ') as time FROM "movieSchedule" ms
   JOIN "movieScheduleTime" mst ON mst."movieScheduleId" = ms.id
   JOIN cinemas ci on ci.id = ms."cinemasId"
   JOIN movies m ON ms."movieId" = m.id
